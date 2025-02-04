@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="MAIN" Id="{1276d8f3-89d2-46b8-a342-c4a4513a46e4}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	i: INT := 1;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ //emelet
+FOR i := 0 TO 10 DO
+	IF	GVL1.i_ajelenlet[i] THEN
+			GVL1.v_ijelenlegi := i;
+	END_IF;
+END_FOR;
+
+//megérkezés
+IF GVL1.v_acelallomas[GVL1.v_ijelenlegi] THEN 
+	GVL1.q_bfelfele := FALSE;
+	GVL1.q_blefele := FALSE;
+END_IF;
+
+//hívásregisztrálás
+FOR i := 0 TO 10 DO
+	IF GVL1.i_afelhivas[i] THEN
+		GVL1.v_acelallomas[i] := TRUE;
+		GVL1.q_anyugtalampa[i] := TRUE; //A lifthívás nyugtázva lett, ennek visszajelzése
+	END_IF;
+	IF GVL1.i_alehivas[i] THEN
+		GVL1.v_acelallomas[i] := TRUE;
+		GVL1.q_anyugtalampa[i] := TRUE;
+	END_IF;
+END_FOR;
+
+//Fülkéből
+FOR i := 0 TO 10 DO
+	IF GVL1.i_afulke[i] THEN
+		GVL1.v_acelallomas[i] := TRUE; // A célemelet beállítása a liftből
+		GVL1.q_afulkecelallomsa[i] := TRUE; //fulke lampa 
+	END_IF;
+END_FOR;
+
+//ajtonyitas
+IF GVL1.v_acelallomas[GVL1.v_ijelenlegi] AND NOT GVL1.v_tido.IN THEN // HA célallomason vagyunk és még nem indult az ora
+	 	GVL1.i_bnyitottajto := TRUE; 
+		GVL1.i_bzartajto := FALSE; // csak nyitott ajtonal
+		GVL1.v_tido(IN := TRUE, PT := GVL1.c_tvarakozasiido);	
+END_IF;
+
+IF GVL1.v_tido.Q THEN
+	GVL1.i_bnyitottajto := FALSE;
+	GVL1.i_bzartajto := TRUE;
+	GVL1.v_acelallomas[GVL1.v_ijelenlegi] := FALSE;
+END_IF;
+
+//Mozgatas
+IF NOT GVL1.v_acelallomas[GVL1.v_ijelenlegi] THEN
+	FOR i := 0 TO 10 DO
+		IF GVL1.v_acelallomas[i] THEN
+			IF i < GVL1.v_ijelenlegi THEN // HA a celpont alacsonyabban van mint a lift
+				GVL1.q_blefele := TRUE; // A lift lefele megy 
+			END_IF;
+			IF i > GVL1.v_ijelenlegi THEN // HA a celpont fentebb van mint a lift
+				GVL1.q_bfelfele := TRUE; // A lift felfele megy
+			END_IF;			
+		END_IF;
+	END_FOR;
+END_IF;
+
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="30" Count="11" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="110" Count="1" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="90" Count="1" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="4" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="46" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

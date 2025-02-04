@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <GVL Name="GVL1" Id="{06d382b7-5612-42ab-aefa-df96dd9a5ec8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//bemenetek
+	i_ajelenlet : ARRAY[0..10] OF	BOOL; //jelenlet
+	i_afelhivas : ARRAY[1..9] OF 	BOOL; // hivas fel (0 alatt és 10 fölött mar nincs ezert őket nem vesszük bele)
+	i_alehivas : ARRAY[1..9] OF 	BOOL; //hivas le
+	i_afulke : ARRAY[0..10] OF 		BOOL; //fülke gombjai
+	i_bzartajto AT %I* : 			BOOL; //zart ajto
+	i_bnyitottajto AT %I* :			BOOL; //nyitott ajtó
+	
+	//kimenetek
+	q_bfelfele AT %I* : 			BOOL; //felfelé megy
+	q_blefele AT %I* :				BOOL; //lefelé megy
+	q_anyugtalampa : ARRAY[0..10]OF BOOL; //szintenkénti nyugtázó lámpa
+	q_bajtonyit AT %I* :			BOOL; //ajtonyitás
+	q_bajtozar AT %I* :				BOOL; //ajtozarva
+	q_afulkecelallomsa : ARRAY[0..10] OF BOOL; //fülkeben celallomas
+	
+	v_ijelenlegi : 					INT ; //jelenlegi emelet
+	v_acelallomas : ARRAY[0..10]OF  BOOL; //célállomás
+	
+	v_tido : 						TON;  // Időzito
+	c_tvarakozasiido : TIME := 		T#10S; // Váarakozási idő
+			
+	
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
